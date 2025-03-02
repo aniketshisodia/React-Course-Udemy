@@ -9,11 +9,17 @@ const initialItems = [
 
 
 export default function App() {
+  const [items, setItems] = useState([]);
+
+  function handleAddItems(item) {
+    setItems((items) => [...items, item]);
+  }
+
   return (
     <div className="App">
       <Logo />
-      <Form />
-      <PackingList />
+      <Form onAddItems={handleAddItems} />
+      < PackingList items={items} />
       <Stats />
     </div>
   );
@@ -26,7 +32,7 @@ function Logo() {
   </h1>
 }
 
-function Form() {
+function Form({ onAddItems }) {
 
   const [description, setDescription] = useState("");
   const [quantity, setQuantity] = useState(1);
@@ -37,6 +43,7 @@ function Form() {
       return; // if no item name is added then do nothing
     const newItem = { description, quantity, packed: false, id: Date.now() };
     console.log(newItem);
+    onAddItems(newItem);
     setDescription("");
     setQuantity(1);
   }
@@ -59,11 +66,11 @@ function Form() {
   )
 }
 
-function PackingList() {
+function PackingList({ items }) {
   return (
     <div className="list">
       <ul>
-        {initialItems.map((item) => (
+        {items.map((item) => (
           <Item item={item} />
         ))}
       </ul>
@@ -77,7 +84,7 @@ function Item({ item }) {
       <span style={item.packed ? { textDecoration: "line-through" } : {}}>
         {item.quantity}{item.description}
       </span>
-      <button>🛶</button>
+      <button>❌</button>
     </li>
   )
 }
